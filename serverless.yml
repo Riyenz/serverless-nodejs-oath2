@@ -1,0 +1,67 @@
+service: aws-nodejs-oath2
+frameworkVersion: '3'
+
+custom:
+  tableName: 'users-table-${sls:stage}'
+  dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+      seed: true
+    seed:
+      test:
+        sources:
+        - table: ${self:custom.tableName}
+          sources: [./seed/user-seed.json]
+  serverless-offline-ssm:
+    stages:
+      - dev
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ UsersTable, Arn ]
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+    ACCESS_TOKEN_SECRET: ${ssm:LAMBDA.APP_NAME.ACCESS_TOKEN_SECRET}
+    REFRESH_TOKEN_SECRET: ${ssm:LAMBDA.APP_NAME.REFRESH_TOKEN_SECRET}
+    ACCESS_TOKEN_DURATION: '10m'
+    REFRESH_TOKEN_DURATION: '1w'
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+              
+plugins:
+  - serverless-offline-ssm
+  - serverless-dynamodb-local
+  - serverless-offline
