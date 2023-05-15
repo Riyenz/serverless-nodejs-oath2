@@ -20,7 +20,8 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs18.x	
+  region: ap-southeast-1
   iam:
     role:
       statements:
@@ -62,6 +63,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
               
 plugins:
+  - serverless-webpack
   - serverless-offline-ssm
   - serverless-dynamodb-local
   - serverless-offline
