@@ -23,6 +23,8 @@ describe("/login", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("email");
 		}
 	});
 
@@ -33,6 +35,8 @@ describe("/login", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("password");
 		}
 	});
 
@@ -44,6 +48,8 @@ describe("/login", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_FOUND);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("email");
 		}
 	});
 
@@ -55,6 +61,8 @@ describe("/login", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.UNAUTHORIZED);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("password");
 		}
 	});
 });

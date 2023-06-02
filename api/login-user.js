@@ -11,7 +11,7 @@ module.exports = async (request, response) => {
 	try {
 		const { errors } = validateFields(LOGIN_FIELDS, request.body);
 
-		if (errors.length) {
+		if (errors) {
 			return response.status(STATUS_CODES.NOT_ACCEPTABLE).json({ errors });
 		}
 
@@ -27,13 +27,17 @@ module.exports = async (request, response) => {
 		if (!userGet.Item)
 			return response
 				.status(STATUS_CODES.NOT_FOUND)
-				.json({ errors: ["Email not found"] });
+				.json({ errors: {
+					email: 'Email does not exists'
+				} });
 
 		const user = userGet.Item;
 		if (!compareHash(request.body.password, user.password))
 			return response
 				.status(STATUS_CODES.UNAUTHORIZED)
-				.json({ errors: ["Incorrect password"] });
+				.json({ errors: {
+					password: 'Password is incorrect'
+				} });
 
 		const payload = {
 			id: user.id,
@@ -58,6 +62,8 @@ module.exports = async (request, response) => {
 	} catch (err) {
 		return response
 			.status(STATUS_CODES.INTERNAL_SERVER_ERROR)
-			.json({ errors: err.message });
+			.json({ errors: {
+				general: err.message
+			} });
 	}
 };

@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const serverless = require("serverless-http");
 
 const registerUser = require("./api/register-user");
@@ -9,6 +10,7 @@ const refreshToken = require("./api/refresh-token");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.post("/auth/login", loginUser);
 app.post("/auth/register", registerUser);
