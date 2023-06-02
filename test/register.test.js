@@ -13,13 +13,8 @@ describe("/register", () => {
 		const res = await axios.post(url, user);
 
 		expect(res.status).toBe(STATUS_CODES.CREATED);
-		expect(res.data).toMatchObject({
-			user: {
-				email: user.email,
-				firstName: user.firstName,
-				lastName: user.lastName,
-			},
-		});
+		expect(res.data).toHaveProperty("token");
+		expect(res.data).toHaveProperty("refreshToken");
 	});
 
 	test("should fail saying that email already exists", async () => {
@@ -27,6 +22,8 @@ describe("/register", () => {
 			await axios.post(url, USER);
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.CONFLICT);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("email");
 		}
 	});
 
@@ -38,6 +35,8 @@ describe("/register", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("email");
 		}
 	});
 
@@ -49,6 +48,8 @@ describe("/register", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("firstName");
 		}
 	});
 
@@ -60,6 +61,8 @@ describe("/register", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("lastName");
 		}
 	});
 
@@ -71,6 +74,8 @@ describe("/register", () => {
 			});
 		} catch (err) {
 			expect(err.response.status).toBe(STATUS_CODES.NOT_ACCEPTABLE);
+			expect(err.response.data).toHaveProperty("errors");
+			expect(err.response.data.errors).toHaveProperty("password");
 		}
 	});
 });

@@ -11,6 +11,7 @@
 		"http-status-codes": "^2.2.0",
 		"i": "^0.3.7",
 		"jsonwebtoken": "^9.0.0",
+		"lodash": "^4.17.21",
 		"serverless-dynamodb-client": "^0.0.2",
 		"serverless-dynamodb-local": "^0.2.40",
 		"serverless-http": "^3.1.1",
